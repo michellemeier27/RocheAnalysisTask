@@ -12,7 +12,9 @@ library(stringr)
 CountMatrix <- read.delim('DataSet/GSE107593_raw_reads_BCHRNAseq.txt')
 C = colnames(CountMatrix)[10:57]
 # load Meta Data with GEO reference
-GDS <- getGEO(GEO = 'GSE107593')
+GDS <- getGEO(GEO = 'GSE107593',GSEMatrix = TRUE, getGPL = FALSE )
+CountMatrix = exprs(GDS[[1]])
+
 
 # Reformat Metadata ----
 MetaDF = data.frame(SourceName = GDS$GSE107593_series_matrix.txt.gz$source_name_ch1,
