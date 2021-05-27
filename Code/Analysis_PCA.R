@@ -57,6 +57,17 @@ biplot(p,
        axisLabSize = 10)
 strPathSave = 'Results/PCA'
 ggsave('LocationColbySubjectLabBiplotPCA_log2TMM.png', path = strPathSave, device = 'png')
+# color location 
+biplot(p,
+       lab = '',
+       colby = 'Location',
+       hline = 0, vline = 0,
+       legendPosition = 'right',
+       title = 'PCA: Location',
+       axisLabSize = 10)
+strPathSave = 'Results/PCA'
+ggsave('LocationColbybBiplotPCA_log2TMM.png', path = strPathSave, device = 'png')
+
 #with loadings + inflammation colby
 biplot(p,
        lab = '',

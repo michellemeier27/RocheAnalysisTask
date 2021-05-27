@@ -75,6 +75,21 @@ g <- g +ggtitle('Volcano Plot: FDR < 0.05, |log2FC| > 1.5')
 strPathSave = 'Results/DE'
 ggsave('DE_VolcanoPlotFDRlFC.png',plot = g, path = strPathSave, device = 'png')
 
+#volcano plot
+df_plotting = data.frame(log2FC = et$table$logFC, FDR = et$table$PValue)
+g <- ggplot(data = df_plotting, aes(x = log2FC, y = -log10(FDR))) +geom_point() 
+et_low = data.frame(FC = et$table$logFC[et$table$logFC < 0 & et$table$PValue < 0.05],
+                    FDR = et$table$PValue[et$table$logFC < 0& et$table$PValue < 0.05])
+et_high = data.frame(FC = et$table$logFC[et$table$logFC > 0& et$table$PValue < 0.05],
+                     FDR = et$table$PValue[et$table$logFC >0 & et$table$PValue < 0.05])
+g <- g + geom_point(data = et_low, aes(x = FC, y = -log10(FDR)), color='red')
+g <- g + geom_point(data = et_high, aes(x = FC, y = -log10(FDR)), color='blue')
+g <- g +ggtitle('Volcano Plot: FDR < 0.05')
+strPathSave = 'Results/DE'
+ggsave('DE_VolcanoPlotFDR.png',plot = g, path = strPathSave, device = 'png')
+
+
+
 
 # Is the expression profile the same for top20hits across patients? ----
 #only FDR hits
@@ -96,9 +111,8 @@ Heatmap(mat, name = "expression", km = 4, top_annotation = ha,
 
 #DFR+FC
 et_table_subset = subset(et$table, abs(et$table$logFC) > 1.5)
-ix_ordered = order(et_table_subset$PValue)
-Top20AcrossPatients = tmm[ix_ordered[1:20],]
-chromosome_location = et$genes$chr[ix_ordered[1:20]]
+ix_ordered = rownames(et_table_subset)[order(et_table_subset$PValue)]
+Top20AcrossPatients = tmm[match(ix_ordered[1:20], rownames(tmm)),]
 new_rowlabels = CountMatrixSup$gene_name[match(rownames(Top20AcrossPatients) , CountMatrixSup$Row)]
 # make heatmap for visualisation
 mat = as.matrix(Top20AcrossPatients)
@@ -108,5 +122,4 @@ ha = HeatmapAnnotation(
                   inflammation= MetaDF$InflammationStatus),
   annotation_height = unit(4, "mm"))
 Heatmap(mat, name = "expression", km = 4, top_annotation = ha, 
-        row_labels = new_rowlabels, column_names_gp = gpar(fontsize = 8), row_names_gp = gpar(fontsize = 8))+
-  Heatmap(chromosome_location, name = "Type", width = unit(5, "mm"))
+        row_labels = new_rowlabels, column_names_gp = gpar(fontsize = 8), row_names_gp = gpar(fontsize = 8))
