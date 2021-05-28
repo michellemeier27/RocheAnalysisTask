@@ -98,15 +98,15 @@ Top20AcrossPatients = tmm[ix_ordered[1:20],]
 new_rowlabels = CountMatrixSup$gene_name[match(rownames(Top20AcrossPatients) , CountMatrixSup$Row)]
 chromosome_location = et$genes$chr[ix_ordered[1:20]]
 # make heatmap for visualisation
-mat = as.matrix(Top20AcrossPatients)
+mat = scale(t(as.matrix(Top20AcrossPatients)))
+mat = t(mat)
 type = MetaDF$Subject
 ha = HeatmapAnnotation(
   df = data.frame(subject = type,
                   inflammation= MetaDF$InflammationStatus),
   annotation_height = unit(4, "mm"))
-Heatmap(mat, name = "expression", km = 4, top_annotation = ha, 
-        row_labels = new_rowlabels, column_names_gp = gpar(fontsize = 8), row_names_gp = gpar(fontsize = 8))+
-  Heatmap(chromosome_location, name = "Type", width = unit(5, "mm"))
+Heatmap(mat, name = "z-score", km = 4, top_annotation = ha, 
+        row_labels = new_rowlabels, column_names_gp = gpar(fontsize = 8), row_names_gp = gpar(fontsize = 8))
 
 
 #DFR+FC
@@ -115,11 +115,12 @@ ix_ordered = rownames(et_table_subset)[order(et_table_subset$PValue)]
 Top20AcrossPatients = tmm[match(ix_ordered[1:20], rownames(tmm)),]
 new_rowlabels = CountMatrixSup$gene_name[match(rownames(Top20AcrossPatients) , CountMatrixSup$Row)]
 # make heatmap for visualisation
-mat = as.matrix(Top20AcrossPatients)
+mat = scale(t(as.matrix(Top20AcrossPatients)))
+mat = t(mat)
 type = MetaDF$Subject
 ha = HeatmapAnnotation(
   df = data.frame(subject = type,
                   inflammation= MetaDF$InflammationStatus),
   annotation_height = unit(4, "mm"))
-Heatmap(mat, name = "expression", km = 4, top_annotation = ha, 
+Heatmap(mat, name = "zscore", km = 4, top_annotation = ha, 
         row_labels = new_rowlabels, column_names_gp = gpar(fontsize = 8), row_names_gp = gpar(fontsize = 8))

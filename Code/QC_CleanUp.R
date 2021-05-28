@@ -70,7 +70,9 @@ ggsave('QC_TMMDistribution.png',plot = bp_tmm, path = strPathSave, device = 'png
 ggsave('QC_CPMDistribution.png',plot = bp_cpm, path = strPathSave, device = 'png')
 
 # Heatmap for overview ----
-mat = as.matrix(tmm)
+#transfer normalised reads to zscore
+zscore = scale(t(as.matrix(tmm)))
+zscore = t(zscore)
 type = MetaDF$Subject
 ha = HeatmapAnnotation(
   df = data.frame(subject = type,
@@ -79,9 +81,10 @@ ha = HeatmapAnnotation(
   annotation_height = unit(4, "mm")
 )
 t1 = Sys.time()
-Heatmap(mat, name = "expression", top_annotation = ha,
-        show_row_names = FALSE, show_column_names = FALSE)+
-  Heatmap(CountMatrixSup$gene_type[keep], name = "Type", width = unit(5, "mm"))
+Heatmap(as.matrix(tmm), name = "z-score", top_annotation = ha,
+        show_row_names = FALSE, show_column_names = FALSE)
+#
+ # Heatmap(CountMatrixSup$gene_type[keep], name = "Type", width = unit(5, "mm"))
 t2 = Sys.time()
 diff =t2-t1
 
